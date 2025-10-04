@@ -1,10 +1,11 @@
-import './App.css'
+import React from 'react'
+import AppRoutes from './routes/AppRoutes'
 
 function App() {
 
   return (
     <>
-     <h1 className='text-red-500'>Hello</h1>
+     <AppRoutes/>
     </>
   )
 }
