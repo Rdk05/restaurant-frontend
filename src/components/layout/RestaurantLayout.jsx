@@ -7,25 +7,23 @@ export default function RestaurantLayout({ children }) {
   const [activeMenu, setActiveMenu] = useState(null);
 
   const handleToggleSidebar = (menu) => {
-    setActiveMenu(menu);
-    setIsSidebarOpen(true);
+    if (menu === activeMenu) {
+      setIsSidebarOpen(!isSidebarOpen);
+    } else {
+      setActiveMenu(menu);
+      setIsSidebarOpen(true);
+    }
   };
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
-      <div
-        className={`bg-white shadow-lg transition-all duration-300 ${
-          isSidebarOpen ? "w-64" : "w-0"
-        }`}
-      >
-        <Sidebar isOpen={isSidebarOpen} activeMenu={activeMenu} />
-      </div>
-
-      {/* Main Content */}
+      <Sidebar isOpen={isSidebarOpen} activeMenu={activeMenu} />
       <div className="flex-1 flex flex-col transition-all duration-300">
-        <Navbar toggleSidebar={handleToggleSidebar} />
-        <main className="flex-1 p-4 bg-gray-100">{children}</main>
+        <Navbar
+          toggleSidebar={handleToggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+        />
+        <main className="flex-1 p-6 bg-gray-100">{children}</main>
       </div>
     </div>
   );

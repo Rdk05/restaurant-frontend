@@ -1,13 +1,50 @@
 import React, { useState } from "react";
 import { FaUtensils } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { apiPost } from "../../utils/http";
+const LoginApi = "restaurant/auth/login";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login with:", { email, password });
+
+    if (!email || !password) {
+      toast.warning("Please enter both email and password!");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await apiPost(LoginApi, { email, password });
+
+      if (response?.data?.success) {
+        const userData = response.data.data;
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("token", userData.token);
+        toast.success(response.data.message || "Login successful!");
+        setTimeout(() => {
+          navigate("/restaurant");
+        }, 1200);
+      } else {
+        toast.error(response.data.message || "Login failed!");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(
+        error.response?.data?.message || "Invalid email or password!"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -17,6 +54,9 @@ export default function Login() {
       bg-[url('https://img.freepik.com/free-photo/wooden-planks-with-blurred-restaurant-background_1253-56.jpg?semt=ais_hybrid&w=740&q=80')] 
       bg-cover bg-center bg-no-repeat p-6"
     >
+      {/* Toast container */}
+      <ToastContainer position="top-right" autoClose={2000} />
+
       <div className="backdrop-blur-md rounded-2xl shadow-xl w-full max-w-xl p-8">
         {/* Logo */}
         <div className="flex justify-center items-center mb-6">
@@ -64,10 +104,12 @@ export default function Login() {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded-lg 
-            font-medium hover:bg-indigo-700 transition duration-300"
+            disabled={loading}
+            className={`w-full ${
+              loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700"
+            } text-white py-2 rounded-lg font-medium transition duration-300`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>
