@@ -17,7 +17,7 @@ function AppRoutes() {
         {/* <Route path="/admin/*" element={<AdminRoutes />} /> */}
 
         {/* Restaurant Panel */}
-        <Route path="/restaurant/login*" element={<Login />} />
+        <Route path="/restaurant/login" element={<Login />} />
         <Route path="/restaurant/*" element={<RestaurantRoutes />} />
       </Routes>
     </BrowserRouter>

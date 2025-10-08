@@ -5,13 +5,24 @@ import {
   FaChair,
   FaUtensils,
   FaCog,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 
-export default function Navbar({ toggleSidebar }) {
+export default function Navbar({ toggleSidebar, isSidebarOpen }) {
   return (
     <nav className="bg-white shadow-md p-4 flex justify-between items-center">
-      {/* Logo */}
+      {/* Left: Hamburger + Logo */}
       <div className="flex items-center gap-4">
+        {/* Sidebar toggle button */}
+        <button
+          onClick={() => toggleSidebar(null)}
+          className="text-gray-600 hover:text-indigo-600 mr-2"
+        >
+          {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+        </button>
+
+        {/* Logo */}
         <Link
           to="/restaurant"
           className="text-xl font-bold text-indigo-600 flex items-center gap-2"
@@ -21,7 +32,7 @@ export default function Navbar({ toggleSidebar }) {
       </div>
 
       {/* Nav Links */}
-      <ul className="flex gap-6">
+      <ul className="hidden md:flex gap-6">
         <li>
           <Link
             to="/restaurant"
