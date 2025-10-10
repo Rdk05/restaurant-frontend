@@ -1,25 +1,27 @@
-
-import React from 'react'
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RestaurantRoutes from "./RestaurantRoutes";
-import Login from '../components/pages/Login';
-// import AdminRoutes from "./AdminRoutes";
-// import UserRoutes from "./UserRoutes";
+import Login from "../components/pages/Login";
+import ProtectedRoute from "../components/ProtectedRoute";
+import { AuthProvider } from "../context/AuthContext";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* User Side */}
-        {/* <Route path="/*" element={<UserRoutes />} /> */}
-
-        {/* Admin Panel */}
-        {/* <Route path="/admin/*" element={<AdminRoutes />} /> */}
-
-        {/* Restaurant Panel */}
-        <Route path="/restaurant/login" element={<Login />} />
-        <Route path="/restaurant/*" element={<RestaurantRoutes />} />
-      </Routes>
+      {/* 👇 Now AuthProvider is INSIDE the Router */}
+      <AuthProvider>
+        <Routes>
+          <Route path="/restaurant/login" element={<Login />} />
+          <Route
+            path="/restaurant/*"
+            element={
+              <ProtectedRoute>
+                <RestaurantRoutes />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
