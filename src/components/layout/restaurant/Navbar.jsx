@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaHome,
   FaChartLine,
@@ -8,8 +8,11 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function Navbar({ toggleSidebar, isSidebarOpen }) {
+  const { isAuthenticated, logout } = useAuth();
+
   return (
     <nav className="bg-white shadow-md p-4 flex justify-between items-center">
       {/* Left: Hamburger + Logo */}
@@ -79,12 +82,22 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
       <div className="flex items-center gap-6">
         <button className="text-gray-600 hover:text-indigo-600">🔔</button>
         <button className="text-gray-600 hover:text-indigo-600">👤</button>
-        <Link
-          to="/restaurant/login"
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300"
-        >
-          Login
-        </Link>
+
+        {isAuthenticated ? (
+          <button
+            onClick={logout}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
+          >
+            Logout
+          </button>
+        ) : (
+          <Link
+            to="/restaurant/login"
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300"
+          >
+            Login
+          </Link>
+        )}
       </div>
     </nav>
   );
