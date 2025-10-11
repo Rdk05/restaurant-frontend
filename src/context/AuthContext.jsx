@@ -7,7 +7,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("restaurant");
+    // console.log(storedUser)
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -15,17 +16,17 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("restaurant", JSON.stringify(userData));
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("restaurant");
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ restaurant, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

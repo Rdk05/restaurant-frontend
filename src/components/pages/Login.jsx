@@ -28,7 +28,7 @@ export default function Login() {
       if (response?.data?.success) {
         const userData = response.data.data;
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("restaurant", JSON.stringify(userData));
         localStorage.setItem("token", userData.token);
         toast.success(response.data.message || "Login successful!");
         setTimeout(() => {
