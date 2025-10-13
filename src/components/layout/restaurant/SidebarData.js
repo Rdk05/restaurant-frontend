@@ -3,7 +3,7 @@ export const sidebarMenus = {
   tables: {
     title: "Table Management",
     links: [
-      { path: "/restaurant/tables", label: "Tables" },
+      { path: "/restaurant/table/tables", label: "Tables" },
       { path: "/restaurant/reservations", label: "Reservations" },
     ],
   },
