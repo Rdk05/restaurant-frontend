@@ -68,7 +68,7 @@ export default function TableManagement() {
       <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b-4 border-yellow-400 inline-block pb-1">
             Table Management
           </h2>
           <button
