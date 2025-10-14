@@ -16,7 +16,6 @@ export default function CategoryManagement() {
     status: "Active",
   });
 
-  // Fetch categories
   const fetchCategories = async () => {
     setLoading(true);
     try {
@@ -24,7 +23,7 @@ export default function CategoryManagement() {
       if (res.data.success) {
         const data = res.data.data || [];
         setCategories(data);
-        if (data.length > 0) setSelectedCategory(data[0]); // default first selected
+        if (data.length > 0) setSelectedCategory(data[0]);
       } else {
         toast.error("Failed to fetch categories");
       }
@@ -40,13 +39,11 @@ export default function CategoryManagement() {
     fetchCategories();
   }, []);
 
-  // Handle input change for modal
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewCategory((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Submit new category
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -75,10 +72,11 @@ export default function CategoryManagement() {
   return (
     <div className="p-4 md:p-10 min-h-screen bg-gradient-to-br from-gray-50 to-gray-200">
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg flex flex-col md:flex-row overflow-hidden">
-        {/* Left Panel - Category List */}
         <div className="md:w-1/3 border-b md:border-b-0 md:border-r border-gray-200 bg-gray-50 p-4">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">🍽️ Categories</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-6 border-b-4 border-yellow-400 inline-block pb-1">
+              🍽️ Categories
+            </h2>
             <button
               onClick={() => setIsModalOpen(true)}
               className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition"
@@ -111,17 +109,20 @@ export default function CategoryManagement() {
           )}
         </div>
 
-        {/* Right Panel - Category Details */}
         <div className="md:w-2/3 p-6 md:p-8">
           {selectedCategory ? (
             <div className="transition-all duration-300 transform hover:scale-[1.01] bg-white shadow-md border border-gray-200 rounded-xl p-6">
               <h3 className="text-2xl font-bold text-gray-800 mb-4">
                 {selectedCategory.categoryName}
               </h3>
-              <p className="text-gray-600 text-lg mb-2">{selectedCategory.description}</p>
+              <p className="text-gray-600 text-lg mb-2">
+                {selectedCategory.description}
+              </p>
               <p
                 className={`text-sm font-semibold ${
-                  selectedCategory.status === "Active" ? "text-green-600" : "text-red-500"
+                  selectedCategory.status === "Active"
+                    ? "text-green-600"
+                    : "text-red-500"
                 }`}
               >
                 Status: {selectedCategory.status}
@@ -135,14 +136,17 @@ export default function CategoryManagement() {
         </div>
       </div>
 
-      {/* Modal - Add Category */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
-            <h3 className="text-lg font-semibold mb-4 text-center">Add New Category</h3>
+            <h3 className="text-lg font-semibold mb-4 text-center">
+              Add New Category
+            </h3>
             <form className="space-y-3" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-gray-700 mb-1">Category Name</label>
+                <label className="block text-gray-700 mb-1">
+                  Category Name
+                </label>
                 <input
                   type="text"
                   name="categoryName"
@@ -193,7 +197,9 @@ export default function CategoryManagement() {
                   type="submit"
                   disabled={loading}
                   className={`px-4 py-2 rounded text-white ${
-                    loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700"
+                    loading
+                      ? "bg-gray-400"
+                      : "bg-indigo-600 hover:bg-indigo-700"
                   }`}
                 >
                   {loading ? "Saving..." : "Save"}

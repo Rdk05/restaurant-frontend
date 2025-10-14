@@ -8,6 +8,7 @@ import Menu from "../modules/restaurant/pages/Menu";
 import Profile from "../modules/restaurant/pages/Profile";
 import TableManagement from "../modules/restaurant/components/Table/TableManagement";
 import CategoryManagement from "../modules/restaurant/components/category/CategoryManagement";
+import Item from "../modules/restaurant/components/menu/Item";
 
 export default function RestaurantRoutes() {
   return (
@@ -17,6 +18,7 @@ export default function RestaurantRoutes() {
         <Route path="/orders" element={<Orders />} />
         <Route path="table/tables" element={<TableManagement />} />
         <Route path="menu/categories" element={<CategoryManagement />} />
+        <Route path="menu/item" element={<Item />} />
         <Route path="/table" element={<Tables />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/profile" element={<Profile />} />

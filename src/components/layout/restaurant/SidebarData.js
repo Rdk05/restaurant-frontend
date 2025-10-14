@@ -17,9 +17,9 @@ export const sidebarMenus = {
   menu: {
     title: "Menu Management",
     links: [
-      { path: "/restaurant/menu/view", label: "View Menu" },
-      { path: "/restaurant/menu/add", label: "Add New Dish" },
       { path: "/restaurant/menu/categories", label: "Categories" },
+      { path: "/restaurant/menu/item", label: "Item" },
+      { path: "/restaurant/menu/add", label: "Add New Dish" },
     ],
   },
 };
