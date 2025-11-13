@@ -5,18 +5,17 @@ import { toast } from "react-toastify";
 const getTableApi = "/restaurant/table/list";
 const addTableApi = "/restaurant/table/create";
 
-export default function TableManagement() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export default function TableManagement({ isModalOpen, setIsModalOpen, onTableAdded }) {
   const [tableData, setTableData] = useState([]);
   const [newTable, setNewTable] = useState({
     tableName: "",
     capacity: "",
-    tableShape: "round",
-    status: "Available",
+    tableShape: "Round",
+    status: 1, // ✅ Default to Active
   });
   const [loading, setLoading] = useState(false);
 
-  // Fetch table data
+  // ✅ Fetch table data
   const fetchTableAPI = async () => {
     try {
       const res = await apiGet(getTableApi);
@@ -30,13 +29,16 @@ export default function TableManagement() {
     fetchTableAPI();
   }, []);
 
-  // Handle form input change
+  // ✅ Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewTable((prev) => ({ ...prev, [name]: value }));
+    setNewTable((prev) => ({
+      ...prev,
+      [name]: name === "status" ? Number(value) : value,
+    }));
   };
 
-  // Handle Add Table form submit
+  // ✅ Handle Add Table submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -44,14 +46,15 @@ export default function TableManagement() {
       const res = await apiPost(addTableApi, newTable);
       if (res.data.success) {
         toast.success("Table added successfully!");
+        onTableAdded?.(); // refresh tables in parent
         setIsModalOpen(false);
         setNewTable({
           tableName: "",
           capacity: "",
-          tableShape: "round",
-          status: "Available",
+          tableShape: "Round",
+          status: 1,
         });
-        fetchTableAPI(); // Refresh table list
+        fetchTableAPI();
       } else {
         toast.error(res.data.message || "Failed to add table");
       }
@@ -64,89 +67,96 @@ export default function TableManagement() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b-4 border-yellow-400 inline-block pb-1">
-            Table Management
-          </h2>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
-          >
-            + Add Table
-          </button>
-        </div>
+    <>
+      {/* Table List Section */}
+      <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b-4 border-yellow-400 inline-block pb-1">
+              Table Management
+            </h2>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+            >
+              + Add Table
+            </button>
+          </div>
 
-        {/* Table List */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-200 rounded-lg">
-            <thead className="bg-indigo-600 text-white">
-              <tr>
-                <th className="py-2 px-4 border">#</th>
-                <th className="py-2 px-4 border">Table No</th>
-                <th className="py-2 px-4 border">Capacity</th>
-                <th className="py-2 px-4 border">TableShape</th>
-                <th className="py-2 px-4 border">Status</th>
-                <th className="py-2 px-4 border">CreatedAt</th>
-                <th className="py-2 px-4 border">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.length > 0 ? (
-                tableData.map((table, index) => (
-                  <tr
-                    key={table._id}
-                    className="text-center hover:bg-gray-100 transition"
-                  >
-                    <td className="border py-2 px-4">{index + 1}</td>
-                    <td className="border py-2 px-4">{table.tableName}</td>
-                    <td className="border py-2 px-4">{table.capacity}</td>
-                    <td className="border py-2 px-4">{table.tableShape}</td>
-                    <td
-                      className={`border py-2 px-4 font-medium ${
-                        table.status === "Available"
-                          ? "text-green-600"
-                          : table.status === "Occupied"
-                          ? "text-red-600"
-                          : "text-yellow-600"
-                      }`}
+          <div className="overflow-x-auto">
+            <table className="min-w-full border border-gray-200 rounded-lg">
+              <thead className="bg-indigo-600 text-white">
+                <tr>
+                  <th className="py-2 px-4 border">#</th>
+                  <th className="py-2 px-4 border">Table No</th>
+                  <th className="py-2 px-4 border">Capacity</th>
+                  <th className="py-2 px-4 border">Table Shape</th>
+                  <th className="py-2 px-4 border">Status</th>
+                  <th className="py-2 px-4 border">Created At</th>
+                  <th className="py-2 px-4 border">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableData.length > 0 ? (
+                  tableData.map((table, index) => (
+                    <tr
+                      key={table._id}
+                      className="text-center hover:bg-gray-100 transition"
                     >
-                      {table.status}
-                    </td>
-                    <td className="border py-2 px-4">
-                      {new Date(table.createdAt).toLocaleString()}
-                    </td>
-                    <td className="border py-2 px-4 space-x-2">
-                      <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
-                        Edit
-                      </button>
-                      <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">
-                        View
-                      </button>
-                      <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
-                        Delete
-                      </button>
+                      <td className="border py-2 px-4">{index + 1}</td>
+                      <td className="border py-2 px-4">{table.tableName}</td>
+                      <td className="border py-2 px-4">{table.capacity}</td>
+                      <td className="border py-2 px-4">{table.tableShape}</td>
+
+                      <td
+                        className={`border py-2 px-4 font-medium ${
+                          table.status === true ||
+                          table.status === 1 ||
+                          table.isActive === true
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {table.status === true ||
+                        table.status === 1 ||
+                        table.isActive === true
+                          ? "Active"
+                          : "Deactive"}
+                      </td>
+
+                      <td className="border py-2 px-4">
+                        {new Date(table.createdAt).toLocaleString()}
+                      </td>
+                      <td className="border py-2 px-4 space-x-2">
+                        <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
+                          Edit
+                        </button>
+                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">
+                          View
+                        </button>
+                        <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="7"
+                      className="text-center py-4 text-gray-500 font-medium"
+                    >
+                      No tables found
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="5"
-                    className="text-center py-4 text-gray-500 font-medium"
-                  >
-                    No tables found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      {/* Modal (for Add/Edit) */}
+      {/* ✅ Add Table Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
@@ -179,8 +189,9 @@ export default function TableManagement() {
                   required
                 />
               </div>
+
               <div>
-                <label className="block text-gray-700 mb-1">TableShape</label>
+                <label className="block text-gray-700 mb-1">Table Shape</label>
                 <select
                   name="tableShape"
                   value={newTable.tableShape}
@@ -203,9 +214,8 @@ export default function TableManagement() {
                   className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
                   required
                 >
-                  <option value="Available">Available</option>
-                  <option value="Occupied">Occupied</option>
-                  <option value="Reserved">Reserved</option>
+                  <option value={1}>Active</option>
+                  <option value={0}>Deactive</option>
                 </select>
               </div>
 
@@ -233,6 +243,6 @@ export default function TableManagement() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

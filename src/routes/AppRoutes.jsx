@@ -8,7 +8,6 @@ import { AuthProvider } from "../context/AuthContext";
 function AppRoutes() {
   return (
     <BrowserRouter>
-      {/* 👇 Now AuthProvider is INSIDE the Router */}
       <AuthProvider>
         <Routes>
           <Route path="/restaurant/login" element={<Login />} />
